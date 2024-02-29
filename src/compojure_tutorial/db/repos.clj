@@ -19,3 +19,15 @@
     (map (fn [row] {:id (:repos/id row)
                     :name (:repos/name row)})
          raw-data)))
+
+(defn get-repo-by-id
+  [id]
+  (let [rows (jdbc/execute! datasource
+                            ["SELECT id, name from repos where id = ?" (Integer/parseInt id)])]
+    rows))
+
+(defn update-repo-name
+  [id name]
+  (let [result (jdbc/execute! datasource
+                              ["UPDATE repos set name = ? where id = ?" (str name) (Integer/parseInt id)])]
+    result))
