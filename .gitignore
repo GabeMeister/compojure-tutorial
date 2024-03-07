@@ -12,3 +12,4 @@ pom.xml.asc
 env.json
 .clj-kondo/
 .lsp/
+.calva/

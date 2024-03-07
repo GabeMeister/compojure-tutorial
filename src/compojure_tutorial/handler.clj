@@ -12,6 +12,7 @@
   (GET "/repo/:id" [id] (get-repo-id id))
   (PUT "/repo/:id" req (put-repo-id req))
   (GET "/repo/:id/edit" [id] (repo-id-edit id))
+  (route/resources "/styles.css")
   (route/not-found "Not Found"))
 
 (defn get-site-defaults
