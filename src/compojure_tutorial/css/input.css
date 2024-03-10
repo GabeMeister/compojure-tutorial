@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.child-loading-spinner, .child-loading-btn {
+  display: none;
+}
+
+.htmx-request .child-loading-spinner,
+.htmx-request .child-loading-btn {
+  display: block;
+}
+
+.htmx-request .original-content {
+  display: none;
+}

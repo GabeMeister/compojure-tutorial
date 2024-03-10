@@ -12,18 +12,20 @@
         repo-name (:repos/name repo)]
     [:div
      {:hx-target "this" :hx-swap "outerHTML"}
-     [:h1.text-2xl.flex.items-center.gabe-heading
-      [:span.mr-2 repo-name]
-      (loading-spinner {:id loader-id})
-      [:span.text-lg.ml-2
-       (link {:hx-get edit-link :hx-indicator (str "#" loader-id)} "Edit")]
-      [:span.text-lg.ml-2
-       (link
-        {:href external-link
-         :target "_blank"}
-        "Go ↗")]]
-     [:style "
-              .gabe-heading {
-                color: red;
-              }
-              "]]))
+     [:h1
+      {:class "text-3xl leading-10 flex items-center gabe-heading"}
+      (link
+       {:href external-link
+        :target "_blank"}
+       [:span
+        repo-name])
+      [:span
+       {:class "text-lg ml-2 edit-loading"}
+       (link {:hx-get edit-link
+              :hx-indicator "closest .edit-loading"
+              :class "original-content text-sm"} "Edit")
+       [:div
+        {:class "w-10"}
+        (loading-spinner
+         {:id loader-id
+          :class "child-loading-spinner"})]]]]))

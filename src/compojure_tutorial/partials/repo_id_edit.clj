@@ -1,7 +1,9 @@
 (ns compojure-tutorial.partials.repo-id-edit
   (:require [compojure-tutorial.utils.templates :refer [templ]]
             [compojure-tutorial.db.repos :refer [get-repo-by-id]]
-            [compojure-tutorial.components.loading-spinner :refer [loading-spinner]]))
+            [compojure-tutorial.components.loading-spinner :refer [loading-spinner]]
+            [compojure-tutorial.components.text-input :refer [text-input]]
+            [compojure-tutorial.components.button :refer [button]]))
 
 (defn repo-id-edit
   [id]
@@ -10,21 +12,26 @@
         cancel-path (str "/repo/" repo-id)
         put-path (str "/repo/" id)
         name (:repos/name repo)
-        loading-id (str "edit-repo-loading-" repo-id)]
+        loading-id (str "edit-loading-" repo-id)]
     (templ
      [:form
       {:hx-put put-path
-       :hx-indicator (str "#" loading-id)
        :hx-target "this"
        :hx-swap "outerHTML"}
       [:div
-       [:label "Repo Name"]
+       [:label {:for "repoName"} "Repo Name"]
        [:br]
-       [:input {:type "text"
-                :name "repoName"
-                :value name}]]
+       [:div
+        (text-input {:id "repoName"
+                     :name "repoName"
+                     :value name
+                     :width-css "w-96"})]]
       [:div
-       [:button "Save"]
-       [:button {:hx-get cancel-path :hx-indicator (str "#" loading-id)} "Cancel"]]
-      [:div
-       (loading-spinner {:id loading-id})]])))
+       {:class "mt-2 flex items-center"}
+       (button {} "Save")
+       (button {:hx-get cancel-path
+                :hx-indicator (str "#" loading-id)
+                :color "gray"
+                :class "ml-2"}
+               "Cancel")
+       (loading-spinner {:id loading-id :class "htmx-indicator ml-2"})]])))

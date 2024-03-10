@@ -4,6 +4,9 @@
   ([attr]
    (link attr nil))
   ([attr content]
-   [:a
-    (merge {:class "cursor-pointer text-blue-500 hover:text-blue-700 transition duration-500"} attr)
-    content]))
+   (let [class (:class attr)
+         attr (dissoc attr :class)]
+     [:a
+      (merge {:class (str "cursor-pointer text-blue-500 hover:text-blue-700 transition duration-500 " class)}
+             attr)
+      content])))
