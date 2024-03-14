@@ -4,14 +4,17 @@
             [ring.middleware.defaults :refer [wrap-defaults
                                               site-defaults]]
             [compojure-tutorial.pages.home :refer [home]]
+            [compojure-tutorial.pages.test-page :refer [test-page]]
             [compojure-tutorial.partials.repo-id-edit :refer [repo-id-edit]]
             [compojure-tutorial.partials.repo-id :refer [get-repo-id put-repo-id]]))
 
 (defroutes app-routes
   (GET "/" [] (home))
+
+  (GET "/test-page" [] (test-page))
+
   (GET "/repo/:id" [id] (get-repo-id id))
   (PUT "/repo/:id" req (put-repo-id req))
-
   (GET "/repo/:id/edit" [id] (repo-id-edit id))
 
   (route/resources "/styles.css")
