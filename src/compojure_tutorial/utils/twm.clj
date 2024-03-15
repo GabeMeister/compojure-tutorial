@@ -138,7 +138,10 @@
 (defn twm
   "Override default tailwind classes with new tailwind classes"
   [orig-css override-css]
-  (let [orig-css-map (css-to-map orig-css)
-        override-css-map (css-to-map override-css orig-css-map)
-        new-css (css-map-to-str override-css-map)]
-    new-css))
+  (if (or (nil? override-css)
+          (= "" override-css))
+    orig-css
+    (let [orig-css-map (css-to-map orig-css)
+          override-css-map (css-to-map override-css orig-css-map)
+          new-css (css-map-to-str override-css-map)]
+      new-css)))

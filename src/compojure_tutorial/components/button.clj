@@ -1,4 +1,6 @@
-(ns compojure-tutorial.components.button)
+(ns compojure-tutorial.components.button
+  (:require [clojure.string :as str]
+            [compojure-tutorial.utils.twm :refer [twm]]))
 
 (defn- color-to-css
   ([] (color-to-css "blue"))
@@ -10,16 +12,17 @@
      nil (color-to-css "blue"))))
 
 (defn button
-  "Props:
-   - :color - the color you want your button to be"
-  [attr content]
-  (let [color (color-to-css (:color attr))
-        class-str (str
-                   "text-white px-3 py-1 rounded-[3px] animate-color duration-300 "
-                   color
-                   " "
-                   (:class attr))
-        btn-attr (merge attr {:class class-str})]
+  "The classic button component
+   
+   Props:
+   - :class - override css styling
+   - :color - the color the button should be"
+  [props content]
+  (let [color (color-to-css (:color props))
+        class-str (-> "text-white px-3 py-1 rounded-[3px] animate-color duration-300"
+                      (twm color)
+                      (twm (:class props)))
+        btn-attr (merge props {:class class-str})]
     [:button
      btn-attr
      content]))
