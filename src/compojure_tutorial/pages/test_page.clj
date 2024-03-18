@@ -6,6 +6,5 @@
 (defn test-page
   []
   (templ (page-wrapper [:div
-                        (button {:color "red"
-                                 :class "w-96 h-96 rounded-xl text-green-500"}
+                        (button {:class "w-96"}
                                 "HI THERE")])))
