@@ -1,65 +1,31 @@
 (ns compojure-tutorial.utils.twm
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [compojure-tutorial.utils.map :refer [remove-nested]]))
 
 ;;
 ;; CONSTS
 ;;
 
-;; We might use these later
-
-;; (def CSS-PROPERTIES ["w",
-;;                      "max-w",
-;;                      "min-w",
-;;                      "m",
-;;                      "mt",
-;;                      "ml",
-;;                      "mr",
-;;                      "mb",
-;;                      "my",
-;;                      "mx",
-;;                      "p",
-;;                      "pt",
-;;                      "pl",
-;;                      "pr",
-;;                      "pb",
-;;                      "py",
-;;                      "px",
-;;                      "text",
-;;                      "bg",
-;;                      "rounded",
-;;                      "animate",
-;;                      "duration",
-;;                      "outline",
-;;                      "border",
-;;                      "cursor"])
-
-;; For testing purposes 
-
-;; (def EXAMPLE-CSS-MAP {"w" {"value" "w-5"
-;;                            "hover" {"value" "hover:w-10"}}
-;;                       "m" {"value" "m-3"}
-;;                       "p" {"value" "p-2"}})
-
+(def RELATED-CSS-PROPERTIES {"p" ["pt" "pr" "pb" "pl"]
+                             "m" ["mt" "mr" "mb" "ml"]})
 
 ;;
-;; EXAMPLE DATA
+;; EXAMPLES
 ;;
 
-;; CSS INPUT: 'text-green-700 hover:text-yellow-500 md:hover:text-red-500'
-
-;; CSS MAP:
+;; GIVEN CSS INPUT: 'text-green-700 hover:text-yellow-500 md:hover:text-red-500'
+;; CORRESPONDING CSS MAP:
 ;; {
-;;   text: {
-;;     value: 'text-green-700',
-;;     hover: {
-;;       value: 'text-yellow-500',
-;;       md: {
-;;         value: 'text-red-500',
+;;   "text" {
+;;     "value" "text-green-700"
+;;     "hover" {
+;;       "value" "text-yellow-500"
+;;       "md" {
+;;         "value" "text-red-500"
 ;;       }
 ;;     }
 ;;   }
 ;; }
-
 
 ;;
 ;; FUNCTIONS
@@ -79,16 +45,13 @@
   ;; Given a map of css properties/modifiers to classes, return the final css
   ;; class string
   [css-map]
-  (println css-map)
-  (str/trim
-   (reduce (fn [acc css-str]
-             (str acc " " (str/trim css-str)))
-           ""
-           (map (fn [key] (recursive-get-css (get css-map key) "")) (keys css-map)))))
+  (str/trim (reduce (fn [acc css-str] (str acc " " (str/trim css-str)))
+                    ""
+                    (map (fn [key] (recursive-get-css (get css-map key) "")) (keys css-map)))))
 
-(defn- get-modifiers
-  ;; Given a string css class (e.g. `md:hover:text-blue-100`), return a
-  ;; collection of the modifiers in alphabetical order (e.g. ['hover', 'md'])
+(defn- parse-modifiers
+  ;; Given a string css class (e.g. `md:hover:text-blue-100`), return a list of
+  ;; the modifiers in alphabetical order ( e.g. '('hover', 'md') )
   [class]
   (if (str/includes? class ":")
     (let [modifiers (butlast (sort (str/split class #":")))]
@@ -96,7 +59,7 @@
     '()))
 
 (defn- parse-css-property
-  ;; Given a css class, return just the css property itself without modifiers
+  ;; Given a full css class, return just the css property itself without modifiers
   ;; (e.g. remove `md:hover:` in front) and without spacing (e.g. `-[20px]` or
   ;; `-24` at the end)
   [class]
@@ -105,18 +68,53 @@
         class-without-spacing (first (str/split class-without-modifier #"-"))]
     class-without-spacing))
 
+(defn- remove-css-reducer
+  ;; Given a css map, remove the given "path" of keys from the map. The first
+  ;; item in the path should be a css class property, and the rest are
+  ;; modifiers, ending with "value"
+  [css-map path-to-remove]
+  (if (contains? css-map (first path-to-remove))
+    (remove-nested css-map path-to-remove)
+    css-map))
+
+(defn- get-css-paths
+  ;; Given a css path as a vec, return a list of additional css paths for
+  ;; related css properties
+  [css-path related-css-properties]
+  (map (fn [css-prop] (assoc css-path 0 css-prop)) related-css-properties))
+
+(defn- remove-related-css-properties
+  ;; Given a css map and a css path (for example, ["mt", "hover", "md"]), remove
+  ;; css key/value that get "stomped". For example, if the original css was
+  ;; `pt-5`, but we want to override with `p-2`, then we need to remove the
+  ;; keys/value of `pt-5` (even though they are different css class properties)
+  [css-map path]
+  (let [css-property (first path)]
+    (if (contains? RELATED-CSS-PROPERTIES css-property)
+      (let [css-paths-to-remove (get-css-paths path
+                                               (get RELATED-CSS-PROPERTIES css-property))]
+        (reduce remove-css-reducer css-map css-paths-to-remove))
+      css-map)))
+
 (defn- css-reducer
   ;; Given a css map, add in the appropriate keys and final value of the given
-  ;; css class
+  ;; css class, and also remove any keys/values of css properties that get
+  ;; "stomped" by the newly added css class
   [css-map class]
   (let [css-property (parse-css-property class)
-        modifiers (get-modifiers class)
-        map-path (conj modifiers css-property)]
-    (assoc-in css-map map-path {"value" class})))
+        l-modifiers (parse-modifiers class)
+        css-path (conj l-modifiers css-property)
+        css-path-with-value (conj (vec css-path) "value")
+        css-map-with-new-css-class (assoc-in css-map css-path {"value" class})
+        css-map-with-classes-filtered-out (remove-related-css-properties css-map-with-new-css-class
+                                                                         css-path-with-value)]
+    css-map-with-classes-filtered-out))
 
 (defn- css-coll-to-map
   ;; Given a collection of css classes, return a map with root-level keys as css
-  ;; classes, nested keys as modifiers, and values as the classes themselves
+  ;; class properties (e.g. `pt` for padding top), nested keys as modifiers
+  ;; (e.g. `md` or `hover`), and the values as the full css classes themselves
+  ;; (e.g. `hover:pt-4`)
   ([css-coll] (css-coll-to-map css-coll {}))
   ([css-coll init-map]
    (reduce css-reducer init-map css-coll)))
@@ -145,3 +143,15 @@
           override-css-map (css-to-map override-css orig-css-map)
           new-css (css-map-to-str override-css-map)]
       new-css)))
+
+
+(twm "mt-1" "mt-2")    ;;  ->  "mt-2"
+(twm "md:mt-1" "mt-2")   ;;  ->  "md:mt-1 mt-2" INCORRECT
+(twm "md:mt-1" "md:mt-2")   ;;  ->  "md:mt-2"
+(twm "md:mt-1 random-class-gabe" "md:mt-2")   ;;  ->  "random-class-gabe md:mt-2"
+(twm "mt-1 md:mt-4" "mt-2")   ;;  ->  "md:mt-4 mt-2" INCORRECT
+(twm "mt-1 md:mt-4" "mt-2 md:mt-6")   ;;  ->  "mt-2 md:mt-6" INCORRECT
+(twm "mt-1 md:mt-4" "mt-2 md:mt-6 lg:mt-10")   ;;  ->  "mt-2 md:mt-6 lg:mt-10" INCORRECT
+(twm "mt-1" "m-4")   ;;  ->  "m-4"
+(twm "m-1" "mb-4")   ;;  ->  "m-1 mb-4"
+(twm "mt-1" "mb-4")   ;;  ->  "mt-1 mb-4"
