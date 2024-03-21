@@ -144,17 +144,3 @@
           override-css-map (css-to-map override-css orig-css-map)
           new-css (css-map-to-str override-css-map)]
       new-css)))
-
-
-(twm "md:mt-1" "mt-2")   ;;  ->  "md:mt-1 mt-2"
-(twm "mt-1 md:mt-4" "mt-2")   ;;  ->  "md:mt-4 mt-2"
-(twm "mt-1 md:mt-4" "mt-2 md:mt-6")   ;;  ->  "mt-2 md:mt-6"
-(twm "mt-1 md:mt-4" "mt-2 md:mt-6 lg:mt-10")   ;;  ->  "mt-2 md:mt-6 lg:mt-10"
-
-
-(twm "mt-1" "mt-2")    ;;  ->  "mt-2"
-(twm "md:mt-1" "md:mt-2")   ;;  ->  "md:mt-2"
-(twm "md:mt-1 random-class-gabe" "md:mt-2")   ;;  ->  "random-class-gabe md:mt-2"
-(twm "mt-1" "m-4")   ;;  ->  "m-4"
-(twm "m-1" "mb-4")   ;;  ->  "m-1 mb-4"
-(twm "mt-1" "mb-4")   ;;  ->  "mt-1 mb-4"
