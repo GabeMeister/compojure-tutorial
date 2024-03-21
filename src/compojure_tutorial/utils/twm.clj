@@ -1,5 +1,6 @@
 (ns compojure-tutorial.utils.twm
   (:require [clojure.string :as str]
+            [clojure.pprint :refer [pprint]]
             [compojure-tutorial.utils.map :refer [remove-nested]]))
 
 ;;
@@ -105,7 +106,7 @@
         l-modifiers (parse-modifiers class)
         css-path (conj l-modifiers css-property)
         css-path-with-value (conj (vec css-path) "value")
-        css-map-with-new-css-class (assoc-in css-map css-path {"value" class})
+        css-map-with-new-css-class (assoc-in css-map css-path (merge (get-in css-map css-path) {"value" class}))
         css-map-with-classes-filtered-out (remove-related-css-properties css-map-with-new-css-class
                                                                          css-path-with-value)]
     css-map-with-classes-filtered-out))
@@ -145,13 +146,15 @@
       new-css)))
 
 
+(twm "md:mt-1" "mt-2")   ;;  ->  "md:mt-1 mt-2"
+(twm "mt-1 md:mt-4" "mt-2")   ;;  ->  "md:mt-4 mt-2"
+(twm "mt-1 md:mt-4" "mt-2 md:mt-6")   ;;  ->  "mt-2 md:mt-6"
+(twm "mt-1 md:mt-4" "mt-2 md:mt-6 lg:mt-10")   ;;  ->  "mt-2 md:mt-6 lg:mt-10"
+
+
 (twm "mt-1" "mt-2")    ;;  ->  "mt-2"
-(twm "md:mt-1" "mt-2")   ;;  ->  "md:mt-1 mt-2" INCORRECT
 (twm "md:mt-1" "md:mt-2")   ;;  ->  "md:mt-2"
 (twm "md:mt-1 random-class-gabe" "md:mt-2")   ;;  ->  "random-class-gabe md:mt-2"
-(twm "mt-1 md:mt-4" "mt-2")   ;;  ->  "md:mt-4 mt-2" INCORRECT
-(twm "mt-1 md:mt-4" "mt-2 md:mt-6")   ;;  ->  "mt-2 md:mt-6" INCORRECT
-(twm "mt-1 md:mt-4" "mt-2 md:mt-6 lg:mt-10")   ;;  ->  "mt-2 md:mt-6 lg:mt-10" INCORRECT
 (twm "mt-1" "m-4")   ;;  ->  "m-4"
 (twm "m-1" "mb-4")   ;;  ->  "m-1 mb-4"
 (twm "mt-1" "mb-4")   ;;  ->  "mt-1 mb-4"
