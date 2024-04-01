@@ -1,4 +1,5 @@
-(ns compojure-tutorial.components.link)
+(ns compojure-tutorial.components.link
+  (:require [compojure-tutorial.utils.twm :refer [twm]]))
 
 (defn link
   ([props]
@@ -7,6 +8,11 @@
    (let [class (:class props)
          attr (dissoc props :class)]
      [:a
-      (merge {:class (str "cursor-pointer text-blue-500 hover:text-blue-700 transition duration-500 " class)}
+      (merge {:class (twm "cursor-pointer
+                           text-blue-500
+                           hover:text-blue-700
+                           transition
+                           duration-500"
+                          class)}
              attr)
       content])))
