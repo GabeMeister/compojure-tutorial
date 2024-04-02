@@ -3,7 +3,6 @@
             [clojure.pprint :refer [pprint]]
             [compojure-tutorial.utils.map :refer [remove-nested]]
             [compojure-tutorial.data.twm-consts :refer [CLASS-MAP
-                                                        CLASS-GROUPS
                                                         CONFLICTING-CLASSES]]))
 
 ;;
@@ -120,14 +119,43 @@
 ;;                                                                          css-path-with-value)]
 ;;     css-map-with-classes-filtered-out))
 
+(defn- remove-class-conflicts-reducer
+  [css-map conflicts-vec css-path-list]
+  (loop [css-map css-map
+         conflicting-class-groups-vec conflicts-vec]
+    (if (= 0 (count conflicting-class-groups-vec))
+      (let [g nil]
+        (println css-map)
+        css-map)
+      (let [conflicting-class-group-str (first conflicting-class-groups-vec)
+            conflicting-css-path-list (assoc css-path-list 0 conflicting-class-group-str)]
+        (recur (remove-nested css-map conflicting-css-path-list)
+               (rest conflicting-class-groups-vec))))))
+
+;; (remove-class-conflicts-reducer {"mt" {"hover" {"value" "hover:mt-1"}}} ["mt" "mb" "ml" "mr"] '("mt" "hover"))
+
+(defn- remove-conflicting-css-classes
+  [css-map css-path-list class-group-str]
+  (if (contains? CONFLICTING-CLASSES class-group-str)
+    (let [css-map-no-conflicts ()]
+      nil)
+    css-map))
+
+(defn- add-class-to-css-map
+  [css-map css-path-list class-str class-group-str]
+  (let [css-map-with-new-class (assoc-in css-map css-path-list class-str)
+        css-map-without-conflicts]
+    nil))
+
 (defn- css-coll-to-map-reducer
   [css-map class-str]
   (let [css-property (parse-css-property class-str)]
     (if (is-recognized-class? css-property)
       (let [modifiers-list (parse-modifiers class-str)
-            class-group (get CLASS-MAP css-property)
-            css-path-list (conj (vec (conj modifiers-list class-group)) "value")]
-        (assoc-in css-map css-path-list class-str))
+            class-group-str (get CLASS-MAP css-property)
+            css-path-list (conj (vec (conj modifiers-list class-group-str)) "value")
+            new-css-map (add-class-to-css-map css-map css-path-list class-str class-group-str)]
+        new-css-map)
       (assoc-in css-map ["unrecognized"] (conj (get css-map "unrecognized" []) class-str)))))
 
 (defn- css-coll-to-map
@@ -165,4 +193,4 @@
       new-css)))
 
 ;; (twm "hover:md:text-blue-500 md:text-red-200 grid gabe-special-class" "text-sm flex md:text-yellow-600")
-(twm "mt-5" "m-10")
+;; (twm "mt-5" "m-10")

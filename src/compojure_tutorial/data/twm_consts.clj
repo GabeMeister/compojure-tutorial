@@ -1181,8 +1181,6 @@
                                      "flex-col",
                                      "flex-col-reverse"]})
 
-(def CACHED-CLASS-MAP {})
-
 (defn- build-class-map
   [class-group-str classes-vec]
   (loop [class-map {}
@@ -1198,17 +1196,14 @@
   (let [class-map (build-class-map class-group-str classes-vec)]
     (merge acc class-map)))
 
-(defn get-class-map
+(defn- get-class-map
   [class-groups]
-  (println "DOING GET CLASS MAP")
   (let [class-map (reduce class-group-reducer {} class-groups)]
     class-map))
 
 (def get-class-map-memoized (memoize get-class-map))
 
 (def CLASS-MAP (get-class-map-memoized CLASS-GROUPS))
-
-
 
 (def CONFLICTING-CLASSES {"overflow" ["overflow-x" "overflow-y"]
                           "overscroll" ["overscroll-x" "overscroll-y"]
