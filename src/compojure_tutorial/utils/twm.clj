@@ -32,22 +32,29 @@
 
 
 (defn- recursive-get-css
-  ;; Given a map of css, iterate through all the keys/values of the map and form
-  ;; a string containing all of the css classes
-  [m css-str]
-  (reduce (fn [acc [k, v]] (if (= k "value")
-                             (str/trim (str acc " " v))
-                             (str/trim (str acc " " (recursive-get-css v css-str)))))
+  ;; Given a map of css and the current css string, iterate through all the
+  ;; keys/values of the map and form a string containing all of the css classes
+  [css-map css-str]
+  (reduce (fn [final-css-str [key, val]] (if (= key "value")
+                                           (str/trim (str final-css-str " " val))
+                                           (str/trim (str final-css-str " " (recursive-get-css val css-str)))))
           css-str
-          m))
+          css-map))
+
+(defn- css-class-group-map-to-str
+  [[class-group-str css-map]]
+  ;; the `unrecognized` top-level key is special because it is a list  of
+  ;; unrecognized classes instead of a css map
+  (if (= "unrecognized" class-group-str)
+    (str/join " " css-map)
+    (recursive-get-css css-map "")))
 
 (defn- css-map-to-str
-  ;; Given a map of css properties/modifiers to classes, return the final css
-  ;; class string
+  ;; Given a css map, return the final css class string
   [css-map]
   (str/trim (reduce (fn [acc css-str] (str acc " " (str/trim css-str)))
                     ""
-                    (map (fn [key] (recursive-get-css (get css-map key) "")) (keys css-map)))))
+                    (map css-class-group-map-to-str css-map))))
 
 (defn- parse-modifiers
   ;; Given a string css class (e.g. `md:hover:text-blue-100`), return a list of
@@ -113,7 +120,6 @@
 ;;                                                                          css-path-with-value)]
 ;;     css-map-with-classes-filtered-out))
 
-
 (defn- css-coll-to-map-reducer
   [css-map class-str]
   (let [css-property (parse-css-property class-str)]
@@ -158,4 +164,5 @@
           new-css (css-map-to-str override-css-map)]
       new-css)))
 
-(twm "hover:md:text-blue-500 md:text-red-200 grid gabe-special-class" "text-sm flex md:text-yellow-600")
+;; (twm "hover:md:text-blue-500 md:text-red-200 grid gabe-special-class" "text-sm flex md:text-yellow-600")
+(twm "mt-5" "m-10")
