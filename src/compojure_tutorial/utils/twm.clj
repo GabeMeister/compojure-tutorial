@@ -41,9 +41,11 @@
           css-map))
 
 (defn- css-class-group-map-to-str
+  ;; Given a class group name and the corresponding css map that lives under
+  ;; that name, convert the css map into a string. If the class group is
+  ;; `unrecognized`, it is special and is just a straight vector of unrecognized
+  ;; class names.
   [[class-group-str css-map]]
-  ;; the `unrecognized` top-level key is special because it is a list  of
-  ;; unrecognized classes instead of a css map
   (if (= "unrecognized" class-group-str)
     (str/join " " css-map)
     (recursive-get-css css-map "")))
@@ -65,6 +67,7 @@
     '()))
 
 (defn- is-recognized-class?
+  ;; Check whether a given a specific css class needs to be processed via twm. 
   [class-str]
   (contains? CLASS-MAP class-str))
 
@@ -77,77 +80,37 @@
   (let [class-without-modifiers-str (last (str/split class-str #":"))]
     class-without-modifiers-str))
 
-(defn- remove-css-reducer
-  ;; Given a css map, remove the given "path" of keys from the map. The first
-  ;; item in the path should be a css class property, and the rest are
-  ;; modifiers, ending with "value"
-  [css-map path-to-remove]
-  (if (contains? css-map (first path-to-remove))
-    (remove-nested css-map path-to-remove)
-    css-map))
-
-(defn- get-css-paths
-  ;; Given a css path as a vec, return a list of additional css paths for
-  ;; related css properties
-  [css-path related-css-properties]
-  (map (fn [css-prop] (assoc css-path 0 css-prop)) related-css-properties))
-
-;; (defn- remove-related-css-properties
-;;   ;; Given a css map and a css path (for example, ["mt", "hover", "md"]), remove
-;;   ;; css key/value that get "stomped". For example, if the original css was
-;;   ;; `pt-5`, but we want to override with `p-2`, then we need to remove the
-;;   ;; keys/value of `pt-5` (even though they are different css class properties)
-;;   [css-map path]
-;;   (let [css-property (first path)]
-;;     (if (contains? RELATED-CSS-PROPERTIES css-property)
-;;       (let [css-paths-to-remove (get-css-paths path
-;;                                                (get RELATED-CSS-PROPERTIES css-property))]
-;;         (reduce remove-css-reducer css-map css-paths-to-remove))
-;;       css-map)))
-
-;; (defn- css-reducer
-;;   ;; Given a css map, add in the appropriate keys and final value of the given
-;;   ;; css class, and also remove any keys/values of css properties that get
-;;   ;; "stomped" by the newly added css class
-;;   [css-map class]
-;;   (let [css-property (parse-css-property class)
-;;         l-modifiers (parse-modifiers class)
-;;         css-path (conj l-modifiers css-property)
-;;         css-path-with-value (conj (vec css-path) "value")
-;;         css-map-with-new-css-class (assoc-in css-map css-path (merge (get-in css-map css-path) {"value" class}))
-;;         css-map-with-classes-filtered-out (remove-related-css-properties css-map-with-new-css-class
-;;                                                                          css-path-with-value)]
-;;     css-map-with-classes-filtered-out))
-
-(defn- remove-class-conflicts-reducer
-  [css-map conflicts-vec css-path-list]
-  (loop [css-map css-map
-         conflicting-class-groups-vec conflicts-vec]
-    (if (= 0 (count conflicting-class-groups-vec))
-      (let [g nil]
-        (println css-map)
-        css-map)
-      (let [conflicting-class-group-str (first conflicting-class-groups-vec)
-            conflicting-css-path-list (assoc css-path-list 0 conflicting-class-group-str)]
-        (recur (remove-nested css-map conflicting-css-path-list)
-               (rest conflicting-class-groups-vec))))))
-
-;; (remove-class-conflicts-reducer {"mt" {"hover" {"value" "hover:mt-1"}}} ["mt" "mb" "ml" "mr"] '("mt" "hover"))
-
 (defn- remove-conflicting-css-classes
-  [css-map css-path-list class-group-str]
+  ;; Given a css map that already has values, remove any css classes within a
+  ;; class group that has conflicts with a new class that was just recently
+  ;; inserted
+  [css-map css-path-vec class-group-str]
   (if (contains? CONFLICTING-CLASSES class-group-str)
-    (let [css-map-no-conflicts ()]
-      nil)
+    (let [conflicting-class-groups-vec (get CONFLICTING-CLASSES class-group-str)]
+      (loop [class-groups-vec conflicting-class-groups-vec
+             css-map css-map]
+        (if (= 0 (count class-groups-vec))
+          css-map
+          (let [class-group-str (first class-groups-vec)
+                css-path-to-remove-vec (assoc css-path-vec 0 class-group-str)]
+            (recur (rest class-groups-vec)
+                   (remove-nested css-map css-path-to-remove-vec))))))
     css-map))
 
 (defn- add-class-to-css-map
+  ;; Given a css map, add in another class into the map and deal with conflicts
   [css-map css-path-list class-str class-group-str]
-  (let [css-map-with-new-class (assoc-in css-map css-path-list class-str)
-        css-map-without-conflicts]
-    nil))
+  (let [css-map-with-new-class (assoc-in css-map
+                                         css-path-list
+                                         class-str)
+        css-map-without-conflicts (remove-conflicting-css-classes css-map-with-new-class
+                                                                  css-path-list
+                                                                  class-group-str)]
+    css-map-without-conflicts))
 
 (defn- css-coll-to-map-reducer
+  ;; The meat of the twm function. Convert a collection of random css properties
+  ;; into a css map.
   [css-map class-str]
   (let [css-property (parse-css-property class-str)]
     (if (is-recognized-class? css-property)
@@ -191,6 +154,3 @@
           override-css-map (css-to-map override-css orig-css-map)
           new-css (css-map-to-str override-css-map)]
       new-css)))
-
-;; (twm "hover:md:text-blue-500 md:text-red-200 grid gabe-special-class" "text-sm flex md:text-yellow-600")
-;; (twm "mt-5" "m-10")

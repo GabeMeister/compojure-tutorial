@@ -1,13 +1,14 @@
-(ns compojure-tutorial.components.loading-spinner)
+(ns compojure-tutorial.components.loading-spinner
+  (:require [compojure-tutorial.utils.twm :refer [twm]]))
 
 
 (defn loading-spinner
   ([] (loading-spinner {:id "spinner"}))
   ([props]
-   (let [{width-css :width-css, :or {width-css "w-3"}} props
+   (let [class-str (twm "w-3" (:class props))
          props (dissoc props :width-css)]
      [:img.animate-spin
       {:id (:id props)
-       :class (str width-css " " (:class props))
+       :class class-str
        :src "/img/loading-spinner.svg"
        :alt "loading-spinner"}])))

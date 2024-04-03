@@ -1,18 +1,19 @@
 (ns compojure-tutorial.components.text-input
-  (:require [clojure.spec.alpha :as s]))
+  (:require [clojure.spec.alpha :as s]
+            [compojure-tutorial.utils.twm :refer [twm]]))
 
 (defn text-input
-  "Props:
-   - :id
-   - :name
-   - :value
-   - :width-css"
+  ;; Props:
+  ;;  - :id - string
+  ;;  - :name - string
+  ;;  - :value - string
+  ;;  - :class - string
   [props]
   (let [id (:id props)
         name (:name props)
         value (:value props)
-        {width-css :width-css, :or {width-css "w-full"}} props
-        class-str (str "py-1 px-2 outline-none animate-color duration-300 border-[1px] border-gray-300 focus:border-blue-300 rounded-[3px] " width-css)]
+        class-str (twm "py-1 px-2 outline-none animate-color duration-300 border-[1px] border-gray-300 focus:border-blue-300 rounded-[3px]"
+                       (:class props))]
     [:input
      {:type "text"
       :id id

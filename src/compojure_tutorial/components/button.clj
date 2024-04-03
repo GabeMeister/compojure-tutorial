@@ -18,9 +18,9 @@
    - :class - override css styling
    - :color - the color the button should be"
   [props content]
-  (let [color (color-to-css (:color props))
+  (let [color-str (color-to-css (:color props))
         class-str (-> "text-white px-3 py-1 rounded-[3px] animate-color duration-300"
-                      (twm color)
+                      (twm color-str)
                       (twm (:class props)))
         btn-attr (merge props {:class class-str})]
     [:button

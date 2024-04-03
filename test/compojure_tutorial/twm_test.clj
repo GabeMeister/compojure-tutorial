@@ -13,30 +13,16 @@
 
 (deftest test-twm
   (testing "tailwind merge"
-    ;; (is (identical-classes? (twm "m-1" "m-2") "m-2"))
-    ;; (is (identical-classes? (twm "md:mt-1" "mt-2") "md:mt-1 mt-2"))
-    ;; (is (identical-classes? (twm "mt-1 md:mt-4" "mt-2") "md:mt-4 mt-2"))
-    ;; (is (identical-classes? (twm "mt-1 md:mt-4" "mt-2 md:mt-6") "mt-2 md:mt-6"))
-    ;; (is (identical-classes? (twm "mt-1 md:mt-4" "mt-2 md:mt-6 lg:mt-10") "mt-2 md:mt-6 lg:mt-10"))
-    ;; (is (identical-classes? (twm "mt-1" "mt-2")  "mt-2"))
-    ;; (is (identical-classes? (twm "md:mt-1" "md:mt-2") "md:mt-2"))
-    ;; (is (identical-classes? (twm "md:mt-1 random-class-gabe" "md:mt-2") "random-class-gabe md:mt-2"))
-    ;; (is (identical-classes? (twm "mt-1" "m-4") "m-4"))
-    ;; (is (identical-classes? (twm "m-1" "mb-4") "m-1 mb-4"))
-    ;; (is (identical-classes? (twm "mt-1" "mb-4") "mt-1 mb-4"))
-    (is (identical-classes? (twm "text-blue-500" "text-sm") "text-blue text-sm"))
+    (is (identical-classes? (twm "m-1" "m-2") "m-2"))
+    (is (identical-classes? (twm "md:mt-1" "mt-2") "md:mt-1 mt-2"))
+    (is (identical-classes? (twm "mt-1 md:mt-4" "mt-2") "md:mt-4 mt-2"))
+    (is (identical-classes? (twm "mt-1 md:mt-4" "mt-2 md:mt-6") "mt-2 md:mt-6"))
+    (is (identical-classes? (twm "mt-1 md:mt-4" "mt-2 md:mt-6 lg:mt-10") "mt-2 md:mt-6 lg:mt-10"))
+    (is (identical-classes? (twm "mt-1" "mt-2")  "mt-2"))
+    (is (identical-classes? (twm "md:mt-1" "md:mt-2") "md:mt-2"))
+    (is (identical-classes? (twm "md:mt-1 random-class-gabe" "md:mt-2") "random-class-gabe md:mt-2"))
+    (is (identical-classes? (twm "mt-1" "m-4") "m-4"))
+    (is (identical-classes? (twm "m-1" "mb-4") "m-1 mb-4"))
+    (is (identical-classes? (twm "mt-1" "mb-4") "mt-1 mb-4"))
+    (is (identical-classes? (twm "text-blue" "text-sm") "text-blue text-sm"))
     nil))
-
-(twm "text-blue" "text-sm")
-
-{"text" {"values" ["text-"]}}
-
-
-
-
-
-
-
-
-
-

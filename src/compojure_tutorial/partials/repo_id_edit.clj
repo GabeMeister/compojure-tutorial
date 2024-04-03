@@ -25,7 +25,7 @@
         (text-input {:id "repoName"
                      :name "repoName"
                      :value name
-                     :width-css "w-96"})]]
+                     :class "w-96"})]]
       [:div
        {:class "mt-2 flex items-center"}
        (button {} "Save")
