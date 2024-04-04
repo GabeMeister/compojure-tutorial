@@ -1181,6 +1181,28 @@
                                      "flex-col",
                                      "flex-col-reverse"]})
 
+;; Class properties that can accept a custom amount of spacing (for example,
+;; `rounded-[3px]`)
+(def CUSTOM-CLASS-PROPERTIES ["m"
+                              "mx"
+                              "my"
+                              "ms"
+                              "me"
+                              "mt"
+                              "mr"
+                              "mb"
+                              "ml"
+                              "p"
+                              "px"
+                              "py"
+                              "ps"
+                              "pe"
+                              "pt"
+                              "pr"
+                              "pb"
+                              "pl"
+                              "rounded"])
+
 (defn- build-class-map
   [class-group-str classes-vec]
   (loop [class-map {}

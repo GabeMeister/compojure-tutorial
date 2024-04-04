@@ -6,6 +6,20 @@
                                                         CONFLICTING-CLASSES]]))
 
 ;;
+;; GLOSSARY
+;;
+
+;; - class-str: the full string of a class name (e.g. `hover:md:mt-4`)
+
+;; - class-property-str: the class name without the modifiers (e.g. `mt-4`)
+
+;; - class-group-str: the "group" that the class is a part of (e.g. "display" is
+;; the class group for the `flex` css class)
+
+;; - modifier: the prefix(es) before a class property (e.g. the `md:` on `mt-4`)
+
+
+;;
 ;; EXAMPLES
 ;;
 
@@ -25,10 +39,10 @@
 ;;                         "md" "text-red-500"}}
 ;;  "unrecognized" ["gabe-special-class"]}
 
+
 ;;
 ;; FUNCTIONS
 ;;
-
 
 (defn- recursive-get-css
   ;; Given a map of css and the current css string, iterate through all the
@@ -66,10 +80,20 @@
       modifiers)
     '()))
 
+(defn- is-standard-class?
+  [class-property-str]
+  (contains? CLASS-MAP class-property-str))
+
+(defn- is-custom-class?
+  ;; Is the class a class with a custom space (e.g. rounded-[3px])
+  [class-property-str]
+  false)
+
 (defn- is-recognized-class?
   ;; Check whether a given a specific css class needs to be processed via twm. 
-  [class-str]
-  (contains? CLASS-MAP class-str))
+  [class-property-str]
+  (or (is-standard-class? class-property-str)
+      (is-custom-class? class-property-str)))
 
 (defn- parse-css-property
   ;; Given a full css class, return just the css property itself without modifiers
