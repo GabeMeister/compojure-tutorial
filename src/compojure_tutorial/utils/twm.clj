@@ -3,7 +3,8 @@
             [clojure.pprint :refer [pprint]]
             [compojure-tutorial.utils.map :refer [remove-nested]]
             [compojure-tutorial.data.twm-consts :refer [CLASS-MAP
-                                                        CONFLICTING-CLASSES]]))
+                                                        CONFLICTING-CLASSES
+                                                        CUSTOM-CLASS-PROPERTIES]]))
 
 ;;
 ;; GLOSSARY
@@ -14,7 +15,7 @@
 ;; - class-property-str: the class name without the modifiers (e.g. `mt-4`)
 
 ;; - class-group-str: the "group" that the class is a part of (e.g. "display" is
-;; the class group for the `flex` css class)
+;;        the class group for the `flex` css class)
 
 ;; - modifier: the prefix(es) before a class property (e.g. the `md:` on `mt-4`)
 
@@ -87,7 +88,9 @@
 (defn- is-custom-class?
   ;; Is the class a class with a custom space (e.g. rounded-[3px])
   [class-property-str]
-  false)
+  (boolean (some (fn [val] (str/starts-with? class-property-str
+                                             val))
+                 CUSTOM-CLASS-PROPERTIES)))
 
 (defn- is-recognized-class?
   ;; Check whether a given a specific css class needs to be processed via twm. 
@@ -139,6 +142,7 @@
   (let [css-property (parse-css-property class-str)]
     (if (is-recognized-class? css-property)
       (let [modifiers-list (parse-modifiers class-str)
+            ;; TODO: make this handle either custom classes or standard classes
             class-group-str (get CLASS-MAP css-property)
             css-path-list (conj (vec (conj modifiers-list class-group-str)) "value")
             new-css-map (add-class-to-css-map css-map css-path-list class-str class-group-str)]
