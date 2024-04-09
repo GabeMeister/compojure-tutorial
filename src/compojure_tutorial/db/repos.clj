@@ -1,7 +1,8 @@
 (ns compojure-tutorial.db.repos
   (:require [next.jdbc :as jdbc]
             [compojure-tutorial.utils.env :refer [get-env]]
-            [clojure.spec.alpha :as s]))
+            [clojure.spec.alpha :as s]
+            [clojure.data.json :as json]))
 
 (def db-spec
   {:dbtype   "postgresql"
@@ -44,3 +45,12 @@
   (let [result (jdbc/execute! datasource
                               ["UPDATE repos set name = ? where id = ?" (str name) id])]
     result))
+
+(defn get-repo-data
+  [id-str]
+  (let [id (Integer/parseInt id-str)
+        result (jdbc/execute-one! datasource
+                                  ["select id, name, data from repos where id = ?" id])]
+    {"id" id
+     "name" (:repos/name result)
+     "data" (json/read-str (str (:repos/data result)))}))

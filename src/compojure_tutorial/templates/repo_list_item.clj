@@ -7,8 +7,7 @@
   (let [id (:repos/id repo)
         edit-link (str "/repo/" id "/edit")
         loader-id (str "edit-spinner-" id)
-        external-link (str "https://yearendrecap.com/presentation/"
-                           (:repos/id repo))
+        external-link (str "/presentation/" (:repos/id repo))
         repo-name (:repos/name repo)]
     [:div
      {:hx-target "this" :hx-swap "outerHTML"}
