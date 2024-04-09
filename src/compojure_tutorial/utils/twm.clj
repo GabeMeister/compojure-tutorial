@@ -135,6 +135,17 @@
                                                                   class-group-str)]
     css-map-without-conflicts))
 
+(defn- get-custom-css-class-group
+  [css-property-str]
+  (let [css-group-str (first (str/split css-property-str #"-"))]
+    css-group-str))
+
+(defn- get-class-group-from-css-property
+  [css-property-str]
+  (if (is-standard-class? css-property-str)
+    (get CLASS-MAP css-property-str)
+    (get-custom-css-class-group css-property-str)))
+
 (defn- css-coll-to-map-reducer
   ;; The meat of the twm function. Convert a collection of random css properties
   ;; into a css map.
@@ -142,8 +153,7 @@
   (let [css-property (parse-css-property class-str)]
     (if (is-recognized-class? css-property)
       (let [modifiers-list (parse-modifiers class-str)
-            ;; TODO: make this handle either custom classes or standard classes
-            class-group-str (get CLASS-MAP css-property)
+            class-group-str (get-class-group-from-css-property css-property)
             css-path-list (conj (vec (conj modifiers-list class-group-str)) "value")
             new-css-map (add-class-to-css-map css-map css-path-list class-str class-group-str)]
         new-css-map)

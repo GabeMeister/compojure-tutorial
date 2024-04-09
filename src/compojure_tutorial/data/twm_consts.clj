@@ -1179,7 +1179,16 @@
                    "flex-direction" ["flex-row",
                                      "flex-row-reverse",
                                      "flex-col",
-                                     "flex-col-reverse"]})
+                                     "flex-col-reverse"]
+                   "rounded" ["rounded-none",
+                              "rounded-sm",
+                              "rounded",
+                              "rounded-md",
+                              "rounded-lg",
+                              "rounded-xl",
+                              "rounded-2xl",
+                              "rounded-3xl",
+                              "rounded-full"]})
 
 ;; Class properties that can accept a custom amount of spacing (for example,
 ;; `rounded-[3px]`)
@@ -1319,3 +1328,4 @@
                           "touch-x" ["touch"]
                           "touch-y" ["touch"]
                           "touch-pz" ["touch"]})
+
