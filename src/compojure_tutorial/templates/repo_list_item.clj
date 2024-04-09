@@ -14,8 +14,7 @@
      [:h1
       {:class "text-3xl leading-10 flex items-center gabe-heading"}
       (link
-       {:href external-link
-        :target "_blank"}
+       {:href external-link}
        [:span
         repo-name])
       [:span
