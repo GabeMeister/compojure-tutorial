@@ -54,3 +54,11 @@
     {"id" id
      "name" (:repos/name result)
      "data" (json/read-str (str (:repos/data result)))}))
+
+(defn get-repo-data-part
+  [id-str part]
+  (let [id (Integer/parseInt id-str)
+        result (jdbc/execute-one! datasource
+                                  [(str "select id, name, data->'" part "' as stats from repos where id = ?")
+                                   id])]
+    (json/read-str (str (:stats result)))))

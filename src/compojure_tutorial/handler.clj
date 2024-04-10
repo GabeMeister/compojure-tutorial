@@ -3,6 +3,9 @@
             [compojure.route :as route]
             [ring.middleware.defaults :refer [wrap-defaults
                                               site-defaults]]
+            [clojure.pprint :refer [pprint]]
+
+            [compojure-tutorial.utils.templates :refer [templ]]
 
             [compojure-tutorial.pages.home-page :refer [home-page]]
             [compojure-tutorial.pages.presentation-page :refer [presentation-page]]
@@ -18,7 +21,9 @@
 
   (GET "/" [] (home-page))
   (GET "/test-page" [] (test-page))
-  (GET "/presentation/:id" [id] (presentation-page id))
+  (GET "/presentation/:id"
+    [id slide part]
+    (presentation-page id slide part))
 
   ;; 
   ;; PARTIALS
