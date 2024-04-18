@@ -7,7 +7,7 @@
   (let [id (:repos/id repo)
         edit-link (str "/repo/" id "/edit")
         loader-id (str "edit-spinner-" id)
-        external-link (str "/presentation/" (:repos/id repo))
+        external-link (str "/presentation/" (:repos/id repo) "?slide=about&part=main")
         repo-name (:repos/name repo)]
     [:div
      {:hx-target "this" :hx-swap "outerHTML"}
@@ -15,8 +15,7 @@
       {:class "text-3xl leading-10 flex items-center gabe-heading"}
       (link
        {:href external-link}
-       [:span
-        repo-name])
+       [:span repo-name])
       [:span
        {:class "text-lg ml-2 edit-loading"}
        (link {:hx-get edit-link

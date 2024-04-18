@@ -28,16 +28,11 @@
     (assert (s/valid? ::repos repos))
     repos))
 
-(s/def ::id int?)
-
 (defn get-repo-by-id
   [id]
-  (assert (s/valid? ::id id))
-
   (let [rows (jdbc/execute! datasource
                             ["SELECT id, name from repos where id = ?" id])
         final (first rows)]
-    (assert (s/valid? ::repo final))
     final))
 
 (defn update-repo-name
@@ -58,7 +53,7 @@
 (defn get-repo-data-part
   [id-str part]
   (let [id (Integer/parseInt id-str)
+        sql-str (str "select id, name, data->'" part "' as stats from repos where id = ?")
         result (jdbc/execute-one! datasource
-                                  [(str "select id, name, data->'" part "' as stats from repos where id = ?")
-                                   id])]
+                                  [sql-str id])]
     (json/read-str (str (:stats result)))))

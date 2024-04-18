@@ -9,7 +9,7 @@
 
             [compojure-tutorial.pages.home-page :refer [home-page]]
             [compojure-tutorial.pages.presentation-page :refer [presentation-page]]
-            [compojure-tutorial.pages.test-page :refer [test-page]]
+            [compojure-tutorial.pages.test-page :refer [test-page test-page-2]]
 
             [compojure-tutorial.partials.repo-id-edit :refer [repo-id-edit]]
             [compojure-tutorial.partials.repo-id :refer [get-repo-id put-repo-id]]))
@@ -21,6 +21,7 @@
 
   (GET "/" [] (home-page))
   (GET "/test-page" [] (test-page))
+  (GET "/test-page-2" [] (test-page-2))
   (GET "/presentation/:id"
     [id slide part]
     (presentation-page id slide part))
