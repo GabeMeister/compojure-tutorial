@@ -29,4 +29,5 @@
     (is (identical-classes? (twm "mt-4" "mt-[4px]") "mt-[4px]"))
     (is (identical-classes? (twm "m-10" "mt-[20px]") "m-10 mt-[20px]"))
     (is (identical-classes? (twm "m-10 mt-[10px]" "mt-[20px]") "m-10 mt-[20px]"))
+    (is (identical-classes? (twm "w-3" "w-6 h-6") "w-6 h-6"))
     nil))
