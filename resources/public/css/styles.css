@@ -5226,7 +5226,8 @@ video {
   transition-duration: 500ms;
 }
 
-.child-loading-spinner, .child-loading-btn {
+.child-loading-spinner,
+.child-loading-btn {
   display: none;
 }
 

@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-.child-loading-spinner, .child-loading-btn {
+.child-loading-spinner,
+.child-loading-btn {
   display: none;
 }
 
