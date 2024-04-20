@@ -10,8 +10,8 @@
 (defn new-authors-prev-year-slide
   [id-num]
   (let [repo-map (get-repo-by-id id-num)
-        prev-slide-url-str (str "/presentation/" id-num "?" (get-prev-slide-query-params "new_authors" "prev_year"))
-        next-slide-url-str (str "/presentation/" id-num "?" (get-next-slide-query-params "new_authors" "prev_year"))]
+        prev-slide-url-str (str "/presentation/" id-num "?" (get-prev-slide-query-params "new_authors" "prev_year_number"))
+        next-slide-url-str (str "/presentation/" id-num "?" (get-next-slide-query-params "new_authors" "prev_year_number"))]
     (templ
      (page-wrapper [:div {:class "flex flex-col items-center p-6"}
                     [:div "This is the new authors PREV YEAR slide for " (:repos/name repo-map)]

@@ -2,14 +2,16 @@
   (:require [compojure-tutorial.utils.templates :refer [templ]]
             [compojure-tutorial.db.repos :refer [get-repo-by-id]]
             [compojure-tutorial.templates.page-wrapper :refer [page-wrapper]]
+            [compojure-tutorial.utils.slides :refer [get-next-slide-query-params
+                                                     get-prev-slide-query-params]]
             [compojure-tutorial.components.link :refer [link]]
             [compojure-tutorial.components.loading-spinner :refer [loading-spinner]]))
 
 (defn new-authors-curr-year-slide
   [id-num]
   (let [repo-map (get-repo-by-id id-num)
-        prev-slide-url-str (str "/presentation/" id-num "?slide=new_authors&part=title")
-        next-slide-url-str (str "/presentation/" id-num "?slide=new_authors&part=curr_year_number")]
+        prev-slide-url-str (str "/presentation/" id-num "?" (get-prev-slide-query-params "new_authors" "curr_year_number"))
+        next-slide-url-str (str "/presentation/" id-num "?" (get-next-slide-query-params "new_authors" "curr_year_number"))]
     (templ
      (page-wrapper [:div {:class "flex flex-col items-center p-6"}
                     [:div "This is the new authors CURRENT YEAR slide for " (:repos/name repo-map)]

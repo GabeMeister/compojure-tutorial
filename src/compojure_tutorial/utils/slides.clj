@@ -1,7 +1,5 @@
 (ns compojure-tutorial.utils.slides
-  (:require [compojure-tutorial.data.slides :refer [ALL-SLIDES
-                                                    SLIDE-PARTS
-                                                    ALL-SLIDE-PARTS]]
+  (:require [compojure-tutorial.data.slides :refer [ALL-SLIDE-PARTS]]
             [compojure-tutorial.utils.coll :refer [find-index]]
             [ring.util.codec :as codec]))
 
@@ -10,10 +8,10 @@
 ;; 
 
 (defn- is-matching-slide-info
-  [slide-to-match slide-info]
-  (and (= (:slide slide-to-match)
+  [slide-info-to-match slide-info]
+  (and (= (:slide slide-info-to-match)
           (:slide slide-info))
-       (= (:part slide-to-match)
+       (= (:part slide-info-to-match)
           (:part slide-info))))
 
 
