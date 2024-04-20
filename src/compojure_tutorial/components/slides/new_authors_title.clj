@@ -1,6 +1,8 @@
 (ns compojure-tutorial.components.slides.new-authors-title
   (:require [compojure-tutorial.utils.templates :refer [templ]]
             [compojure-tutorial.db.repos :refer [get-repo-by-id]]
+            [compojure-tutorial.utils.slides :refer [get-next-slide-query-params
+                                                     get-prev-slide-query-params]]
             [compojure-tutorial.templates.page-wrapper :refer [page-wrapper]]
             [compojure-tutorial.components.link :refer [link]]
             [compojure-tutorial.components.loading-spinner :refer [loading-spinner]]))
@@ -8,8 +10,8 @@
 (defn new-authors-title-slide
   [id-num]
   (let [repo-map (get-repo-by-id id-num)
-        prev-slide-url-str (str "/presentation/" id-num "?slide=about&part=main")
-        next-slide-url-str (str "/presentation/" id-num "?slide=new_authors&part=prev_year_number")]
+        prev-slide-url-str (str "/presentation/" id-num "?" (get-prev-slide-query-params "new_authors" "title"))
+        next-slide-url-str (str "/presentation/" id-num "?" (get-next-slide-query-params "new_authors" "title"))]
     (templ
      (page-wrapper [:div {:class "flex flex-col items-center p-6"}
                     [:div "This is the new authors title slide for " (:repos/name repo-map)]

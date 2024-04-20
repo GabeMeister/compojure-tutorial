@@ -10,6 +10,8 @@
             [compojure-tutorial.pages.home-page :refer [home-page]]
             [compojure-tutorial.pages.presentation-page :refer [presentation-page]]
             [compojure-tutorial.pages.test-page :refer [test-page test-page-2]]
+            [compojure-tutorial.partials.animal-sound :refer [animal-sound]]
+            [compojure-tutorial.partials.animal-dropdown :refer [animal-dropdown]]
 
             [compojure-tutorial.partials.repo-id-edit :refer [repo-id-edit]]
             [compojure-tutorial.partials.repo-id :refer [get-repo-id put-repo-id]]))
@@ -33,6 +35,8 @@
   (GET "/repo/:id" [id] (get-repo-id id))
   (PUT "/repo/:id" req (put-repo-id req))
   (GET "/repo/:id/edit" [id] (repo-id-edit id))
+  (GET "/animal-sound" [animal] (animal-sound animal))
+  (POST "/animal-dropdown" [animal] (animal-dropdown animal))
 
   ;; 
   ;; RESOURCES

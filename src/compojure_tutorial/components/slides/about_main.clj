@@ -1,6 +1,7 @@
 (ns compojure-tutorial.components.slides.about-main
   (:require [compojure-tutorial.utils.templates :refer [templ]]
             [compojure-tutorial.db.repos :refer [get-repo-by-id]]
+            [compojure-tutorial.utils.slides :refer [get-next-slide-query-params]]
             [compojure-tutorial.components.link :refer [link]]
             [compojure-tutorial.components.loading-spinner :refer [loading-spinner]]
             [compojure-tutorial.templates.page-wrapper :refer [page-wrapper]]))
@@ -8,7 +9,7 @@
 (defn about-main-slide
   [id-num]
   (let [repo-map (get-repo-by-id id-num)
-        next-slide-url-str (str "/presentation/" id-num "?slide=new_authors&part=title")]
+        next-slide-url-str (str "/presentation/" id-num "?" (get-next-slide-query-params "about" "main"))]
     (templ (page-wrapper
             [:div {:class "flex flex-col items-center p-6"}
              [:div "This is the about main slide for " (:repos/name repo-map)]

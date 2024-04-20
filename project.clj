@@ -13,4 +13,5 @@
   :ring {:handler compojure-tutorial.handler/app}
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
-                        [ring/ring-mock "0.3.2"]]}})
+                        [ring/ring-mock "0.3.2"]
+                        [ring/ring-codec "1.2.0"]]}})

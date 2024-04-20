@@ -1,6 +1,6 @@
 (ns compojure-tutorial.data.slides)
 
-(def ALL_SLIDES [:about
+(def ALL-SLIDES [:about
 
                  :new_authors
                  :team_commits
@@ -27,15 +27,15 @@
 (def SLIDE-PARTS
   {:about ["main"]
    :new_authors
-   ["title" "prev-year-number" "curr-year-number" "percent-increase" "list-names"],
+   ["title" "prev_year_number" "curr_year_number" "percent_increase" "list_names"],
    :team_commits
-   ["title" "prev-year-number" "curr-year-number" "percent-increase"],
+   ["title" "prev_year_number" "curr_year_number" "percent_increase"],
    :file_count
-   ["title" "prev-year-number" "curr-year-number" "percent-increase"],
+   ["title" "prev_year_number" "curr_year_number" "percent_increase"],
    :lines_of_code
-   ["title" "prev-year-number" "curr-year-number" "percent-increase"],
+   ["title" "prev_year_number" "curr_year_number" "percent_increase"],
    :longest_files
-   ["title" "third-place" "second-place" "first-place"],
+   ["title" "third_place" "second_place" "first_place"],
    :author_commits_over_time ["title" "main"],
    :team_commits_by_month ["title" "main"],
    :team_commits_by_week_day ["title" "main"],
@@ -48,3 +48,23 @@
    :avg_releases_per_day ["title" "main"],
    :most_releases_in_day ["title" "main"],
    :ending ["main"]})
+
+(defn- get-slide-parts
+  ;; Returns a vector of {:slide :part} maps
+  [slide-kw]
+  (if (contains? SLIDE-PARTS slide-kw)
+    (let [slide-parts (slide-kw SLIDE-PARTS)]
+      (vec (map (fn
+                  [part-str]
+                  {:slide (name slide-kw)
+                   :part part-str})
+                slide-parts)))
+    [{:slide (name slide-kw)
+      :part "main"}]))
+
+(defn- slide-part-reducer
+  [all-slide-parts-vec curr-slide-kw]
+  (let [slide-parts-vec (get-slide-parts curr-slide-kw)]
+    (vec (concat all-slide-parts-vec slide-parts-vec))))
+
+(def ALL-SLIDE-PARTS (reduce slide-part-reducer [] ALL-SLIDES))
