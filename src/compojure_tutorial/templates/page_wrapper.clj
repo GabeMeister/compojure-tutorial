@@ -1,5 +1,6 @@
 (ns compojure-tutorial.templates.page-wrapper)
 
+
 (defn page-wrapper
   [content]
   [:html
@@ -10,6 +11,15 @@
             :href "/img/favicon.ico"}]
     [:link {:rel "stylesheet"
             :href "/css/styles.css"}]
-    [:title "Compojure Tutorial"]]
+    [:title "Compojure Tutorial"]
+
+    [:link {:rel "preconnect" :href "https://fonts.googleapis.com"}]
+    [:link {:rel "preconnect" :href "https://fonts.gstatic.com"}]
+    [:link {:href "https://fonts.googleapis.com/css2?family=Lato&display=swap"
+            :rel "stylesheet"}]
+    [:link {:rel "preconnect" :href "https://fonts.googleapis.com"}]
+    [:link {:rel "preconnect" :href "https://fonts.gstatic.com"}]
+    [:link {:href "https://fonts.googleapis.com/css2?family=Bitter&family=Lato&display=swap"
+            :rel "stylesheet"}]]
    [:body
     content]])
