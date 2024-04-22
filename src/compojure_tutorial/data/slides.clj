@@ -27,13 +27,13 @@
 (def SLIDE-PARTS
   {:about ["main"]
    :new_authors
-   ["title" "prev_year_number" "curr_year_number" "percent_increase" "list_names"],
+   ["title" "prev_year_number" "curr_year_number" "list_names"],
    :team_commits
-   ["title" "prev_year_number" "curr_year_number" "percent_increase"],
+   ["title" "prev_year_number" "curr_year_number"],
    :file_count
-   ["title" "prev_year_number" "curr_year_number" "percent_increase"],
+   ["title" "prev_year_number" "curr_year_number"],
    :lines_of_code
-   ["title" "prev_year_number" "curr_year_number" "percent_increase"],
+   ["title" "prev_year_number" "curr_year_number"],
    :longest_files
    ["title" "third_place" "second_place" "first_place"],
    :author_commits_over_time ["title" "main"],
